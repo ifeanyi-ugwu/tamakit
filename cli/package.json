@@ -1,0 +1,29 @@
+{
+  "name": "tamakit",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "tamakit": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "execa": "^9.5.2",
+    "fs-extra": "^11.3.0",
+    "inquirer": "^12.4.3",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
+  }
+}
