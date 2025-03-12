@@ -124,6 +124,29 @@ program
       );
       fs.ensureDirSync(outDir);
 
+      const targetFile = path.join(outDir, `${component}.tsx`);
+      if (fs.existsSync(targetFile)) {
+        spinner.stop();
+        const { overwrite } = await inquirer.prompt([
+          {
+            type: "confirm",
+            name: "overwrite",
+            message: `Component "${component}" already exists. Do you want to overwrite it?`,
+            default: false,
+          },
+        ]);
+
+        if (!overwrite) {
+          console.log(
+            chalk.yellow(
+              `Operation aborted. Component "${component}" was not modified.`
+            )
+          );
+          return;
+        }
+        spinner.start(`Overwriting ${component} component...`);
+      }
+
       await copyComponentFiles(component, outDir);
 
       const dependencies = await getComponentDependencies(component);
