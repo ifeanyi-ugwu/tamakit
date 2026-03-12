@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { ThemeToggle } from "./components/theme-toggle";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { ComponentPreview } from "./components/component-preview";
 
 // Sample component data - this would come from your registry
