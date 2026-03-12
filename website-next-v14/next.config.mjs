@@ -1,4 +1,12 @@
+import { withTamagui } from "@tamagui/next-plugin";
 /** @type {import('next').NextConfig} */
 const nextConfig = {};
 
-export default nextConfig;
+export default withTamagui({
+  config: "./tamagui.config.ts",
+  components: ["@tamagui/core"],
+  appDir: true,
+  outputCSS:
+    process.env.NODE_ENV === "production" ? "./public/tamagui.css" : null,
+  disableExtraction: process.env.NODE_ENV === "development",
+})(nextConfig);
