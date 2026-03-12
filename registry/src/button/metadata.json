@@ -1,0 +1,7 @@
+{
+  "name": "button",
+  "description": "A button component with multiple variants",
+  "category": "Inputs",
+  "platforms": ["web", "native"],
+  "dependencies": []
+}

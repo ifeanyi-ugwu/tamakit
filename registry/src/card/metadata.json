@@ -1,0 +1,7 @@
+{
+  "name": "card",
+  "description": "A composable card component with header, content, and footer sections",
+  "category": "Layout",
+  "platforms": ["web", "native"],
+  "dependencies": []
+}

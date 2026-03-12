@@ -1,0 +1,7 @@
+{
+  "name": "input",
+  "description": "A flexible input component with label, helper text, and leading/trailing content slots",
+  "category": "Inputs",
+  "platforms": ["web", "native"],
+  "dependencies": []
+}
