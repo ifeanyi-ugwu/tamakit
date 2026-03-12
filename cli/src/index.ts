@@ -5,10 +5,18 @@ import chalk from "chalk";
 import ora from "ora";
 import fs from "fs-extra";
 import path from "path";
-import { execa } from "execa";
-
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { detectProjectType } from "./utils/detect-project-type.js";
+import { generateTamakitConfigTemplate } from "./utils/generate-config-template.js";
+import { safeReadJSON } from "./utils/safe-read-json.js";
+import { installDependencies } from "./utils/install-dependencies.js";
+import { initExpo } from "./frameworks/expo/init-expo.js";
+import { initReact } from "./frameworks/react/init-generic.js";
+import { initNext } from "./frameworks/next/init-next.js";
+import { initVite } from "./frameworks/vite/init-vite.js";
+import { initOne } from "./frameworks/one/init-one.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -31,55 +39,42 @@ program
     const spinner = ora("Initializing TamaKit...").start();
 
     try {
-      const hasTamagui = await checkDependency("tamagui");
+      const projectType = await detectProjectType();
+      spinner.info(`Detected project type: ${chalk.cyan(projectType)}`);
+      spinner.stop();
 
-      if (!hasTamagui) {
-        spinner.info("Tamagui not found in dependencies");
-        spinner.stop();
+      let success = false;
 
-        const { installTamagui } = await inquirer.prompt([
-          {
-            type: "confirm",
-            name: "installTamagui",
-            message: "Tamagui is required. Would you like to install it now?",
-            default: true,
-          },
-        ]);
+      switch (projectType) {
+        case "next":
+          success = await initNext();
+          break;
+        case "expo":
+          success = await initExpo();
+          break;
+        case "vite":
+          success = await initVite();
+          break;
+        case "one":
+          success = await initOne();
+          break;
+        default:
+          success = await initReact();
+      }
 
-        if (installTamagui) {
-          await installDependencies(["tamagui"]);
-        } else {
-          console.log(
-            chalk.yellow("TamaKit requires Tamagui to work properly")
-          );
-          return;
+      if (success) {
+        const configPath = path.join(process.cwd(), "tamakit.config.js");
+        if (!fs.existsSync(configPath)) {
+          const configTemplate = generateTamakitConfigTemplate(projectType);
+          fs.writeFileSync(configPath, configTemplate);
+          console.log(chalk.green("Created tamakit.config.js"));
         }
-      }
 
-      const configPath = path.join(process.cwd(), "tamakit.config.js");
-      if (!fs.existsSync(configPath)) {
-        const configTemplate = `
-module.exports = {
-  // Specify target platforms
-  platforms: ['web', 'native'],
-  
-  // Component output directory
-  outDir: './components/ui',
-  
-  // Theme customization
-  theme: {
-    // Your theme overrides here
-  }
-}
-`;
-        fs.writeFileSync(configPath, configTemplate);
+        console.log(chalk.green("\nTamaKit initialized successfully! 🎉"));
+        console.log("\nNext steps:");
+        console.log("  1. Edit tamakit.config.js to customize your setup");
+        console.log("  2. Run `tamakit add <component>` to add components");
       }
-
-      spinner.succeed("TamaKit initialized successfully");
-      console.log(chalk.green("\nCreated tamakit.config.js"));
-      console.log("\nNext steps:");
-      console.log("  1. Edit tamakit.config.js to customize your setup");
-      console.log("  2. Run `tamakit add <component>` to add components");
     } catch (error) {
       spinner.fail("Failed to initialize TamaKit");
       console.error(chalk.red(error));
@@ -190,52 +185,6 @@ program
       console.error(chalk.red(error));
     }
   });
-
-async function safeReadJSON(filePath: string) {
-  if (!fs.existsSync(filePath) || fs.statSync(filePath).size === 0) {
-    return {};
-  }
-
-  return fs.readJSON(filePath);
-}
-
-async function checkDependency(packageName: string) {
-  try {
-    const packageJsonPath = path.join(process.cwd(), "package.json");
-    const packageJson = await safeReadJSON(packageJsonPath);
-
-    return !!(
-      (packageJson.dependencies && packageJson.dependencies[packageName]) ||
-      (packageJson.devDependencies && packageJson.devDependencies[packageName])
-    );
-  } catch (error) {
-    return false;
-  }
-}
-
-async function installDependencies(dependencies: string[]) {
-  const packageManager = await detectPackageManager();
-
-  const installCommand =
-    packageManager === "npm"
-      ? "install"
-      : packageManager === "yarn"
-      ? "add"
-      : "add";
-
-  await execa(packageManager, [installCommand, ...dependencies], {
-    stdio: "inherit",
-  });
-}
-
-async function detectPackageManager() {
-  const hasYarnLock = fs.existsSync(path.join(process.cwd(), "yarn.lock"));
-  const hasPnpmLock = fs.existsSync(path.join(process.cwd(), "pnpm-lock.yaml"));
-
-  if (hasPnpmLock) return "pnpm";
-  if (hasYarnLock) return "yarn";
-  return "npm";
-}
 
 async function checkComponentInRegistry(componentName: string) {
   const componentPath = path.join(DEV_REGISTRY_PATH, componentName);
