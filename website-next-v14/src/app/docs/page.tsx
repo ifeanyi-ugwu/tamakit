@@ -1,261 +1,162 @@
-"use client";
-
-import { useState } from "react";
-import Head from "next/head";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { ComponentPreview } from "./components/component-preview";
 
-// Sample component data - this would come from your registry
-const components = [
-  {
-    id: "button",
-    name: "Button",
-    description: "A button component with multiple variants",
-    category: "Inputs",
-    examples: [
-      {
-        title: "Default",
-        code: `<Button>Click me</Button>`,
-      },
-      {
-        title: "Variants",
-        code: `
-<Stack space="$2">
-  <Button variant="primary">Primary</Button>
-  <Button variant="destructive">Destructive</Button>
-  <Button variant="outline">Outline</Button>
-  <Button variant="ghost">Ghost</Button>
-</Stack>`,
-      },
-      {
-        title: "Sizes",
-        code: `
-<Stack space="$2">
-  <Button size="sm">Small</Button>
-  <Button size="md">Medium</Button>
-  <Button size="lg">Large</Button>
-</Stack>`,
-      },
-    ],
-  },
-  {
-    id: "card",
-    name: "Card",
-    description: "A card component for containing content",
-    category: "Layout",
-    examples: [
-      {
-        title: "Default",
-        code: `
-<Card>
-  <CardHeader>
-    <CardTitle>Card Title</CardTitle>
-    <CardDescription>Card Description</CardDescription>
-  </CardHeader>
-  <CardContent>
-    <Text>Card Content</Text>
-  </CardContent>
-  <CardFooter>
-    <Button>Action</Button>
-  </CardFooter>
-</Card>`,
-      },
-    ],
-  },
-  // Add more components here
+const frameworks = [
+  { name: "Next.js", note: "App Router and Pages Router" },
+  { name: "Expo", note: "React Native with Expo" },
+  { name: "Vite", note: "SPA and SSR" },
+  { name: "React One", note: "Meta's React One framework" },
 ];
 
-// Group components by category
-const groupedComponents = components.reduce((acc, component) => {
-  acc[component.category] = acc[component.category] || [];
-  acc[component.category].push(component);
-  return acc;
-}, {});
-
-export default function Home() {
-  const [activeTab, setActiveTab] = useState("overview");
-
+export default function DocsPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Head>
-        <title>TamaKit - UI components for Tamagui</title>
-        <meta
-          name="description"
-          content="Beautifully designed components for React Native and Web with Tamagui"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <header className="border-b border-border">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary text-primary-foreground w-8 h-8 rounded-md flex items-center justify-center font-bold">
-              T
-            </div>
-            <span className="font-bold text-xl">TamaKit</span>
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link
-              href="/"
-              className={`${
-                activeTab === "overview"
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              } hover:text-foreground`}
-              onClick={() => setActiveTab("overview")}
-            >
-              Overview
-            </Link>
-            <Link
-              href="/docs"
-              className={`${
-                activeTab === "docs"
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              } hover:text-foreground`}
-              onClick={() => setActiveTab("docs")}
-            >
-              Documentation
-            </Link>
-            <Link
-              href="/components"
-              className={`${
-                activeTab === "components"
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              } hover:text-foreground`}
-              onClick={() => setActiveTab("components")}
-            >
-              Components
-            </Link>
+    <div className="container mx-auto flex max-w-4xl gap-12 px-4 py-12">
+      {/* Sidebar TOC */}
+      <aside className="hidden w-48 shrink-0 lg:block">
+        <nav className="sticky top-24 space-y-1 text-sm">
+          {[
+            ["#prerequisites", "Prerequisites"],
+            ["#installation", "Installation"],
+            ["#frameworks", "Supported Frameworks"],
+            ["#add-components", "Add Components"],
+            ["#usage", "Usage"],
+          ].map(([href, label]) => (
             <a
-              href="https://github.com/yourusername/tamakit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground"
+              key={href}
+              href={href}
+              className="block text-muted-foreground transition-colors hover:text-foreground"
             >
-              GitHub
+              {label}
             </a>
-          </nav>
-          <ThemeToggle />
-        </div>
-      </header>
+          ))}
+        </nav>
+      </aside>
 
-      <main className="container mx-auto px-4 py-12">
-        <section className="max-w-3xl mx-auto text-center mb-16">
-          <h1 className="text-4xl font-bold mb-4">
-            Beautiful UI components for Tamagui
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            TamaKit is a collection of reusable components for React Native and
-            Web, built on top of Tamagui
+      {/* Content */}
+      <article className="min-w-0 flex-1 space-y-12">
+        <div>
+          <h1 className="mb-3 text-4xl font-bold">Getting Started</h1>
+          <p className="text-lg text-muted-foreground">
+            TamaKit is a CLI-driven component library for Tamagui. Components
+            are copied directly into your project so you own and can modify every
+            line.
           </p>
-          <div className="flex gap-4 justify-center">
-            <a
-              href="#getting-started"
-              className="bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium"
-            >
-              Get Started
-            </a>
-            <a
-              href="https://github.com/yourusername/tamakit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-transparent border border-border px-6 py-3 rounded-md font-medium"
-            >
-              GitHub
-            </a>
-          </div>
-        </section>
-
-        <section id="getting-started" className="max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold mb-6">Get Started</h2>
-          <div className="bg-card border border-border rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Installation</h3>
-            <div className="bg-muted p-4 rounded-md mb-6">
-              <code className="text-sm">npm install tamakit-cli -g</code>
-            </div>
-            <h3 className="text-xl font-semibold mb-4">
-              Initialize in your project
-            </h3>
-            <div className="bg-muted p-4 rounded-md mb-6">
-              <code className="text-sm">tamakit init</code>
-            </div>
-            <h3 className="text-xl font-semibold mb-4">Add components</h3>
-            <div className="bg-muted p-4 rounded-md">
-              <code className="text-sm">tamakit add button</code>
-            </div>
-          </div>
-        </section>
-
-        <section className="max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold mb-6">Features</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">Cross-Platform</h3>
-              <p className="text-muted-foreground">
-                Works seamlessly on both React Native and Web
-              </p>
-            </div>
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">Fully Customizable</h3>
-              <p className="text-muted-foreground">
-                Components live in your project, so you can customize them
-              </p>
-            </div>
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">Accessible</h3>
-              <p className="text-muted-foreground">
-                Components follow accessibility best practices
-              </p>
-            </div>
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-2">Dark Mode</h3>
-              <p className="text-muted-foreground">
-                Built-in support for light and dark themes
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">Components</h2>
-          {Object.entries(groupedComponents).map(
-            ([category, categoryComponents]) => (
-              <div key={category} className="mb-12">
-                <h3 className="text-2xl font-semibold mb-4">{category}</h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {categoryComponents.map((component) => (
-                    // <Link
-                    //   key={component.id}
-                    //   //href={`/components/${component.id}`}
-                    //   href="#"
-                    //   className="bg-card border border-border rounded-lg p-6 hover:border-primary transition-colors"
-                    // >
-                    <div key={component.id}>
-                      <h4 className="text-xl font-semibold mb-2">
-                        {component.name}
-                      </h4>
-                      <p className="text-muted-foreground mb-4">
-                        {component.description}
-                      </p>
-                      <ComponentPreview code={component.examples[0].code} />
-                    </div>
-                    // </Link>
-                  ))}
-                </div>
-              </div>
-            )
-          )}
-        </section>
-      </main>
-
-      <footer className="border-t border-border py-8 mt-12">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>Built with Tamagui. Released under the MIT License.</p>
         </div>
-      </footer>
+
+        {/* Prerequisites */}
+        <section id="prerequisites" className="space-y-4">
+          <h2 className="text-2xl font-semibold">Prerequisites</h2>
+          <ul className="space-y-2 text-muted-foreground">
+            <li className="flex gap-2">
+              <span className="text-foreground">—</span>
+              <span>
+                <strong className="text-foreground">Tamagui</strong> installed
+                and configured in your project
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-foreground">—</span>
+              <span>
+                <strong className="text-foreground">React Native ≥ 0.77</strong>{" "}
+                (required for React 18 compatibility with Tamagui)
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        {/* Installation */}
+        <section id="installation" className="space-y-4">
+          <h2 className="text-2xl font-semibold">Installation</h2>
+          <p className="text-muted-foreground">
+            Run the init command in the root of your project. TamaKit
+            auto-detects your framework and sets up the required Tamagui
+            configuration.
+          </p>
+          <CodeBlock code="npx tamakit init" />
+          <p className="text-sm text-muted-foreground">
+            This installs Tamagui dependencies and creates a{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">
+              tamagui.config.ts
+            </code>{" "}
+            in your project root.
+          </p>
+        </section>
+
+        {/* Frameworks */}
+        <section id="frameworks" className="space-y-4">
+          <h2 className="text-2xl font-semibold">Supported Frameworks</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {frameworks.map((f) => (
+              <div
+                key={f.name}
+                className="rounded-lg border border-border bg-card px-4 py-3"
+              >
+                <p className="font-medium">{f.name}</p>
+                <p className="text-sm text-muted-foreground">{f.note}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Add components */}
+        <section id="add-components" className="space-y-4">
+          <h2 className="text-2xl font-semibold">Add Components</h2>
+          <p className="text-muted-foreground">
+            Use the{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">add</code>{" "}
+            command to copy a component into your project. The file is placed in
+            your configured output directory (default:{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">
+              components/ui
+            </code>
+            ).
+          </p>
+          <CodeBlock code="npx tamakit add button" />
+          <p className="text-muted-foreground">
+            To see all available components:
+          </p>
+          <CodeBlock code="npx tamakit ls" />
+        </section>
+
+        {/* Usage */}
+        <section id="usage" className="space-y-4">
+          <h2 className="text-2xl font-semibold">Usage</h2>
+          <p className="text-muted-foreground">
+            Import directly from your{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-xs">
+              components/ui
+            </code>{" "}
+            folder and use like any Tamagui component:
+          </p>
+          <CodeBlock
+            code={`import { Button } from "@/components/ui/button"
+
+export function MyScreen() {
+  return <Button variant="primary">Save changes</Button>
+}`}
+          />
+          <p className="text-sm text-muted-foreground">
+            Since the component lives in your project you can modify variants,
+            tokens, or styles however you need.
+          </p>
+        </section>
+
+        <div className="border-t border-border pt-8">
+          <Link
+            href="/components"
+            className="text-sm font-medium hover:underline"
+          >
+            Browse all components →
+          </Link>
+        </div>
+      </article>
     </div>
+  );
+}
+
+function CodeBlock({ code }: { code: string }) {
+  return (
+    <pre className="overflow-x-auto rounded-lg border border-border bg-muted p-4 text-sm">
+      <code>{code}</code>
+    </pre>
   );
 }
