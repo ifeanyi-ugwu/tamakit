@@ -1,14 +1,13 @@
 import {
   GetProps,
   SizeTokens,
-  Input as TamaguiInput,
   View,
   Text,
   createStyledContext,
   styled,
   withStaticProperties,
-  ThemeableStack,
 } from "@tamagui/web";
+import { Input as TamaguiInput, ThemeableStack } from "tamagui";
 import React from "react";
 import { ReactNode } from "react";
 
