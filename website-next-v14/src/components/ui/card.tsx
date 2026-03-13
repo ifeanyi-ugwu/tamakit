@@ -6,7 +6,7 @@ import {
   createStyledContext,
   styled,
   withStaticProperties,
-} from "@tamagui/web";
+} from "tamagui";
 
 export const CardContext = createStyledContext({
   size: "$md" as SizeTokens,

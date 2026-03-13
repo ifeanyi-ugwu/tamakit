@@ -6,8 +6,9 @@ import {
   createStyledContext,
   styled,
   withStaticProperties,
-} from "@tamagui/web";
-import { Input as TamaguiInput, ThemeableStack } from "tamagui";
+  Input as TamaguiInput,
+  ThemeableStack,
+} from "tamagui";
 import React from "react";
 import { ReactNode } from "react";
 
